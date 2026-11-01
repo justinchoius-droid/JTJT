@@ -13,58 +13,72 @@
     :root { --bg:#0d1117; --card:#151b23; --text:#e6edf3; --muted:#9198a1; --accent:#3fb950; --border:#3d444d; }
   }
   * { box-sizing:border-box; margin:0; padding:0; }
+
   body {
-    min-height:100vh; display:grid; place-items:center; padding:16px;
-    background:var(--bg); color:var(--text); overflow:hidden;
+    min-height:100vh;
+    display:grid;
+    place-items:center;
+    padding:16px 16px 190px;
+    background:var(--bg);
+    color:var(--text);
     font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   }
 
-  /* Dog background */
-  .dog-bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
-  .dog-img {
-    position:absolute;
+  /* ── Photo strip at bottom ── */
+  .photo-strip {
+    position:fixed;
+    bottom:0; left:0; right:0;
+    display:flex;
+    justify-content:center;
+    align-items:flex-end;
+    pointer-events:none;
+    z-index:0;
+    padding:0 8px;
+  }
+  .photo-strip img {
+    width:155px;
+    height:155px;
     object-fit:cover;
-    box-shadow:0 8px 28px rgba(0,0,0,0.18);
-    transition:opacity .3s;
+    border-radius:14px;
+    border:3px solid #fff;
+    box-shadow:0 8px 28px rgba(0,0,0,0.22);
+    flex-shrink:0;
+    margin:0 -20px;
   }
-  .dog-img:nth-child(1) {
-    width:200px; height:200px; border-radius:50%;
-    top:30px; left:30px; transform:rotate(-8deg); opacity:.65;
+  /* each photo gets a slightly different tilt + depth */
+  .photo-strip img:nth-child(1) { transform:rotate( 9deg) translateY(28px); z-index:1; }
+  .photo-strip img:nth-child(2) { transform:rotate(-6deg) translateY(14px); z-index:2; }
+  .photo-strip img:nth-child(3) { transform:rotate( 4deg) translateY( 6px); z-index:3; }
+  .photo-strip img:nth-child(4) { transform:rotate(-10deg)translateY(22px); z-index:2; }
+  .photo-strip img:nth-child(5) { transform:rotate( 2deg) translateY( 2px); z-index:4; }
+  .photo-strip img:nth-child(6) { transform:rotate(-5deg) translateY(18px); z-index:3; }
+  .photo-strip img:nth-child(7) { transform:rotate( 8deg) translateY(10px); z-index:2; }
+  .photo-strip img:nth-child(8) { transform:rotate(-3deg) translateY(24px); z-index:1; }
+  .photo-strip img:nth-child(9) { transform:rotate( 6deg) translateY(16px); z-index:2; }
+
+  @media (max-width:780px) {
+    .photo-strip img { width:120px; height:120px; margin:0 -16px; }
+    body { padding-bottom:150px; }
   }
-  .dog-img:nth-child(2) {
-    width:190px; height:230px; border-radius:20px;
-    top:20px; right:30px; transform:rotate(7deg); opacity:.6;
-  }
-  .dog-img:nth-child(3) {
-    width:210px; height:200px; border-radius:20px;
-    bottom:30px; left:20px; transform:rotate(6deg); opacity:.6;
-  }
-  .dog-img:nth-child(4) {
-    width:195px; height:195px; border-radius:50%;
-    bottom:25px; right:25px; transform:rotate(-9deg); opacity:.65;
-  }
-  .dog-img:nth-child(5) {
-    width:170px; height:170px; border-radius:16px;
-    top:50%; left:50%; transform:translate(calc(-50% + 340px), -50%) rotate(4deg); opacity:.55;
+  @media (max-width:520px) {
+    .photo-strip img { width:90px; height:90px; margin:0 -12px; }
+    body { padding-bottom:115px; }
   }
 
-  @media (max-width:900px) { .dog-img:nth-child(5) { display:none; } }
-  @media (max-width:600px) {
-    .dog-img { width:110px!important; height:110px!important; opacity:.45!important; }
-  }
-
-  /* Card */
+  /* ── Card ── */
   .card {
     position:relative; z-index:1;
     width:100%; max-width:440px;
-    background:var(--card); border:1px solid var(--border);
-    border-radius:16px; padding:30px; text-align:center;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:16px;
+    padding:30px;
+    text-align:center;
     box-shadow:0 4px 24px rgba(0,0,0,0.08);
-    backdrop-filter:blur(2px);
   }
   .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--accent); margin-right:6px; }
-  h1 { font-size:22px; margin:12px 0 6px; }
-  p { color:var(--muted); margin:4px 0; font-size:14px; }
+  h1  { font-size:22px; margin:12px 0 6px; }
+  p   { color:var(--muted); margin:4px 0; font-size:14px; }
   .clock { font-size:36px; font-weight:600; margin:18px 0 4px; font-variant-numeric:tabular-nums; }
   button {
     margin-top:18px; padding:10px 18px; font-size:15px;
@@ -76,12 +90,17 @@
 </head>
 <body>
 
-  <div class="dog-bg">
-    <img class="dog-img" src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=400&q=80&auto=format&fit=crop" alt="">
-    <img class="dog-img" src="https://images.unsplash.com/photo-1784385882549-cc09992b9bad?w=400&q=80&auto=format&fit=crop" alt="">
-    <img class="dog-img" src="https://images.unsplash.com/photo-1600804340584-c7db2eacf0bf?w=400&q=80&auto=format&fit=crop" alt="">
-    <img class="dog-img" src="https://images.unsplash.com/photo-1587402092301-725e37c70fd8?w=400&q=80&auto=format&fit=crop" alt="">
-    <img class="dog-img" src="https://images.unsplash.com/photo-1582456891925-a53965520520?w=400&q=80&auto=format&fit=crop" alt="">
+  <!-- dogs 🐶 and cats 🐱 gathered together at the bottom -->
+  <div class="photo-strip">
+    <img src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=320&q=85&auto=format&fit=crop" alt="dog">
+    <img src="https://images.unsplash.com/photo-1543852786-1cf6624b9987?w=320&q=85&auto=format&fit=crop" alt="cat">
+    <img src="https://images.unsplash.com/photo-1587402092301-725e37c70fd8?w=320&q=85&auto=format&fit=crop" alt="dog">
+    <img src="https://images.unsplash.com/photo-1561948955-570b270e7c36?w=320&q=85&auto=format&fit=crop" alt="cat">
+    <img src="https://images.unsplash.com/photo-1600804340584-c7db2eacf0bf?w=320&q=85&auto=format&fit=crop" alt="dog">
+    <img src="https://images.unsplash.com/photo-1511275539165-cc46b1ee89bf?w=320&q=85&auto=format&fit=crop" alt="cat">
+    <img src="https://images.unsplash.com/photo-1582456891925-a53965520520?w=320&q=85&auto=format&fit=crop" alt="dog">
+    <img src="https://images.unsplash.com/photo-1637424864367-7ab8752c19c6?w=320&q=85&auto=format&fit=crop" alt="cat">
+    <img src="https://images.unsplash.com/photo-1784385882549-cc09992b9bad?w=320&q=85&auto=format&fit=crop" alt="dog">
   </div>
 
   <div class="card">
@@ -98,11 +117,14 @@
   function tick() {
     const now = new Date();
     document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12:false });
-    document.getElementById('date').textContent = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+    document.getElementById('date').textContent  = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
   }
   tick(); setInterval(tick, 1000);
   let n = 0;
-  document.getElementById('btn').onclick = () => { n++; document.getElementById('count').textContent = n + (n === 1 ? ' click' : ' clicks'); };
+  document.getElementById('btn').onclick = () => {
+    n++;
+    document.getElementById('count').textContent = n + (n === 1 ? ' click' : ' clicks');
+  };
 </script>
 </body>
 </html>
