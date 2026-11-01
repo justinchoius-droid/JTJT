@@ -8,26 +8,82 @@
 <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon_jt_github_32.png">
 <link rel="apple-touch-icon" href="assets/favicon_jt_github_180.png">
 <style>
-  :root { --bg:#f6f8fa; --card:#fff; --text:#1f2328; --muted:#59636e; --accent:#1f883d; --border:#d1d9e0; }
+  :root { --bg:#f0f4f0; --card:#fff; --text:#1f2328; --muted:#59636e; --accent:#1f883d; --border:#d1d9e0; }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#0d1117; --card:#151b23; --text:#e6edf3; --muted:#9198a1; --accent:#3fb950; --border:#3d444d; }
   }
-  * { box-sizing:border-box; }
-  body { margin:0; min-height:100vh; display:grid; place-items:center; padding:16px;
-         background:var(--bg); color:var(--text);
-         font-family:-apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Segoe UI", sans-serif; }
-  .card { width:100%; max-width:440px; background:var(--card); border:1px solid var(--border);
-          border-radius:12px; padding:28px; text-align:center; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body {
+    min-height:100vh; display:grid; place-items:center; padding:16px;
+    background:var(--bg); color:var(--text); overflow:hidden;
+    font-family:-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  }
+
+  /* Dog background */
+  .dog-bg { position:fixed; inset:0; pointer-events:none; z-index:0; }
+  .dog-img {
+    position:absolute;
+    object-fit:cover;
+    box-shadow:0 8px 28px rgba(0,0,0,0.18);
+    transition:opacity .3s;
+  }
+  .dog-img:nth-child(1) {
+    width:200px; height:200px; border-radius:50%;
+    top:30px; left:30px; transform:rotate(-8deg); opacity:.65;
+  }
+  .dog-img:nth-child(2) {
+    width:190px; height:230px; border-radius:20px;
+    top:20px; right:30px; transform:rotate(7deg); opacity:.6;
+  }
+  .dog-img:nth-child(3) {
+    width:210px; height:200px; border-radius:20px;
+    bottom:30px; left:20px; transform:rotate(6deg); opacity:.6;
+  }
+  .dog-img:nth-child(4) {
+    width:195px; height:195px; border-radius:50%;
+    bottom:25px; right:25px; transform:rotate(-9deg); opacity:.65;
+  }
+  .dog-img:nth-child(5) {
+    width:170px; height:170px; border-radius:16px;
+    top:50%; left:50%; transform:translate(calc(-50% + 340px), -50%) rotate(4deg); opacity:.55;
+  }
+
+  @media (max-width:900px) { .dog-img:nth-child(5) { display:none; } }
+  @media (max-width:600px) {
+    .dog-img { width:110px!important; height:110px!important; opacity:.45!important; }
+  }
+
+  /* Card */
+  .card {
+    position:relative; z-index:1;
+    width:100%; max-width:440px;
+    background:var(--card); border:1px solid var(--border);
+    border-radius:16px; padding:30px; text-align:center;
+    box-shadow:0 4px 24px rgba(0,0,0,0.08);
+    backdrop-filter:blur(2px);
+  }
   .dot { display:inline-block; width:10px; height:10px; border-radius:50%; background:var(--accent); margin-right:6px; }
   h1 { font-size:22px; margin:12px 0 6px; }
   p { color:var(--muted); margin:4px 0; font-size:14px; }
   .clock { font-size:36px; font-weight:600; margin:18px 0 4px; font-variant-numeric:tabular-nums; }
-  button { margin-top:18px; padding:10px 18px; font-size:15px; border-radius:8px; cursor:pointer;
-           border:1px solid var(--border); background:var(--accent); color:#fff; }
+  button {
+    margin-top:18px; padding:10px 18px; font-size:15px;
+    border-radius:8px; cursor:pointer;
+    border:1px solid var(--border); background:var(--accent); color:#fff;
+  }
   .count { margin-top:10px; font-size:14px; color:var(--muted); }
 </style>
 </head>
 <body>
+
+  <div class="dog-bg">
+    <img class="dog-img" src="https://images.unsplash.com/photo-1601979031925-424e53b6caaa?w=400&q=80&auto=format&fit=crop" alt="">
+    <img class="dog-img" src="https://images.unsplash.com/photo-1784385882549-cc09992b9bad?w=400&q=80&auto=format&fit=crop" alt="">
+    <img class="dog-img" src="https://images.unsplash.com/photo-1600804340584-c7db2eacf0bf?w=400&q=80&auto=format&fit=crop" alt="">
+    <img class="dog-img" src="https://images.unsplash.com/photo-1587402092301-725e37c70fd8?w=400&q=80&auto=format&fit=crop" alt="">
+    <img class="dog-img" src="https://images.unsplash.com/photo-1582456891925-a53965520520?w=400&q=80&auto=format&fit=crop" alt="">
+  </div>
+
   <div class="card">
     <p><span class="dot"></span>GitHub Pages Deployed Successfully</p>
     <h1>Hello, GitHub! 👋</h1>
@@ -37,6 +93,7 @@
     <button id="btn">Click me</button>
     <div class="count" id="count">0 clicks</div>
   </div>
+
 <script>
   function tick() {
     const now = new Date();
