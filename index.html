@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="ko">
+<html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -29,23 +29,23 @@
 </head>
 <body>
   <div class="card">
-    <p><span class="dot"></span>GitHub Pages 배포 성공</p>
+    <p><span class="dot"></span>GitHub Pages Deployed Successfully</p>
     <h1>Hello, GitHub! 👋</h1>
-    <p>Justin의 첫 GitHub 테스트 페이지</p>
+    <p>Justin's First GitHub Test Page</p>
     <div class="clock" id="clock">--:--:--</div>
     <p id="date"></p>
-    <button id="btn">눌러보기</button>
-    <div class="count" id="count">클릭 0회</div>
+    <button id="btn">Click me</button>
+    <div class="count" id="count">0 clicks</div>
   </div>
 <script>
   function tick() {
     const now = new Date();
-    document.getElementById('clock').textContent = now.toLocaleTimeString('ko-KR', { hour12:false });
-    document.getElementById('date').textContent = now.toLocaleDateString('ko-KR', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
+    document.getElementById('clock').textContent = now.toLocaleTimeString('en-US', { hour12:false });
+    document.getElementById('date').textContent = now.toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric', weekday:'long' });
   }
   tick(); setInterval(tick, 1000);
   let n = 0;
-  document.getElementById('btn').onclick = () => { n++; document.getElementById('count').textContent = '클릭 ' + n + '회'; };
+  document.getElementById('btn').onclick = () => { n++; document.getElementById('count').textContent = n + (n === 1 ? ' click' : ' clicks'); };
 </script>
 </body>
 </html>
