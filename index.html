@@ -79,8 +79,8 @@
 </div>
 
 <script>
-  // Tabs 2–10 are placeholders — names and contents will be filled in later.
-  const TABS = ['Home', 'Mail Analysis', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+  // Tabs 2–9 are placeholders — names and contents will be filled in later.
+  const TABS = ['Home', 'Mail Analysis', '2', '3', '4', '5', '6', '7', '8', '9', 'Board'];
   const slug = name => name.toLowerCase().replace(/\s+/g, '-');
 
   // Tabs that open a Google Apps Script web app (private, so it opens in a new tab instead of an iframe)
@@ -88,6 +88,10 @@
     'Mail Analysis': {
       url: 'https://script.google.com/macros/s/AKfycbyhHgECZuqvMTiRBSincWyR5vhSh59xQvKEBhEKT3T2jHez-mFExy2YGf7GqucHfZoE/exec',
       desc: '받은편지함 수신 분석 · 도메인·발신자별 대화 수 (2026.02–11.14)',
+    },
+    'Board': {
+      url: 'https://script.google.com/macros/s/AKfycbyoq0pOoh4E7RFAbprfkx6TQNt3oGXn-TZXFvpzZNw64cBJjJLAseUVR8_7CU3w2XF3/exec',
+      desc: '나만의 게시판 · 메모·기록 (구글 시트에 저장)',
     },
   };
   const appPanel = (name, app) => '<div><h2>' + name + '</h2><p>' + app.desc + '</p>' +
