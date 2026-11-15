@@ -66,6 +66,25 @@
   .photos img:nth-child(9) { transform:rotate( 6deg) translateY( 6px); z-index:2; }
   @media (max-width:780px) { .photos img { width:120px; height:120px; margin:0 -8px; } }
   @media (max-width:520px) { .photos img { width:96px; height:96px; margin:0 -6px; } }
+
+  /* hover lift (scale composes with each photo's rotate) */
+  .photos img { cursor:zoom-in; transition:scale .2s ease, box-shadow .2s ease; }
+  .photos img:hover { scale:1.08; z-index:10; box-shadow:0 14px 36px rgba(0,0,0,0.3); }
+  .photos img.hold { visibility:hidden; }
+
+  /* lightbox: the photo flies from its spot to the centre */
+  .lb { position:fixed; inset:0; z-index:100; background:rgba(0,0,0,0); transition:background .35s ease; cursor:zoom-out; }
+  .lb.on { background:rgba(0,0,0,0.78); }
+  .lb img { position:fixed; object-fit:cover; border:3px solid #fff; border-radius:14px; box-shadow:0 20px 60px rgba(0,0,0,0.45);
+            transition:left .38s cubic-bezier(.2,.8,.2,1), top .38s cubic-bezier(.2,.8,.2,1), width .38s cubic-bezier(.2,.8,.2,1),
+                       height .38s cubic-bezier(.2,.8,.2,1), transform .38s cubic-bezier(.2,.8,.2,1), opacity .2s ease; }
+  .lb button { position:fixed; top:50%; translate:0 -50%; width:44px; height:44px; border:0; border-radius:50%;
+               background:rgba(255,255,255,0.16); color:#fff; font-size:22px; cursor:pointer; opacity:0; transition:opacity .3s, background .2s; }
+  .lb.on button { opacity:1; }
+  .lb button:hover { background:rgba(255,255,255,0.3); }
+  .lb .prev { left:16px; } .lb .next { right:16px; }
+  .lb .x { top:16px; right:16px; translate:none; font-size:18px; }
+  @media (prefers-reduced-motion: reduce) { .lb, .lb img, .photos img { transition:none; } }
 </style>
 </head>
 <body>
@@ -116,6 +135,67 @@
 
   const nav = document.getElementById('tabs');
   const panel = document.getElementById('panel');
+  // ── Lightbox: click a photo → it flies to the centre and grows; ← → to browse, Esc/click to close
+  const big = id => 'https://images.unsplash.com/photo-' + id + '?w=1400&h=1400&q=85&auto=format&fit=crop';
+  let lb = null;
+  function thumbBox(img) {               // untransformed size + on-screen centre + current tilt
+    const r = img.getBoundingClientRect(), m = new DOMMatrix(getComputedStyle(img).transform);
+    const w = img.offsetWidth;
+    return { x: r.left + r.width / 2 - w / 2, y: r.top + r.height / 2 - w / 2, w, rot: Math.atan2(m.b, m.a) * 180 / Math.PI };
+  }
+  function place(el, b) {
+    Object.assign(el.style, { left: b.x + 'px', top: b.y + 'px', width: b.w + 'px', height: b.w + 'px', transform: 'rotate(' + (b.rot || 0) + 'deg)' });
+  }
+  function centreBox() {
+    const w = Math.min(innerWidth * 0.86, innerHeight * 0.86, 900);
+    return { x: (innerWidth - w) / 2, y: (innerHeight - w) / 2, w, rot: 0 };
+  }
+  function openLb(idx) {
+    const thumbs = [...panel.querySelectorAll('.photos img')];
+    const t = thumbs[idx];
+    const ov = document.createElement('div'); ov.className = 'lb';
+    ov.innerHTML = '<img alt=""><button class="prev" aria-label="이전">‹</button><button class="next" aria-label="다음">›</button><button class="x" aria-label="닫기">✕</button>';
+    const im = ov.querySelector('img');
+    im.src = t.src; place(im, thumbBox(t));
+    document.body.appendChild(ov); t.classList.add('hold');
+    lb = { ov, im, idx, thumbs };
+    ov.getBoundingClientRect();          // commit start position before animating
+    ov.classList.add('on'); place(im, centreBox());
+    loadBig(idx);
+    ov.addEventListener('click', e => { if (e.target === ov || e.target === im || e.target.classList.contains('x')) closeLb(); });
+    ov.querySelector('.prev').onclick = e => { e.stopPropagation(); step(-1); };
+    ov.querySelector('.next').onclick = e => { e.stopPropagation(); step(1); };
+  }
+  function loadBig(idx) {
+    const pre = new Image(); pre.onload = () => { if (lb && lb.idx === idx) lb.im.src = pre.src; };
+    pre.src = big(PHOTOS[idx][0]);
+  }
+  function step(d) {
+    if (!lb) return;
+    lb.thumbs[lb.idx].classList.remove('hold');
+    lb.idx = (lb.idx + d + lb.thumbs.length) % lb.thumbs.length;
+    lb.thumbs[lb.idx].classList.add('hold');
+    lb.im.style.opacity = 0;
+    setTimeout(() => { if (!lb) return; lb.im.src = lb.thumbs[lb.idx].src; lb.im.style.opacity = 1; loadBig(lb.idx); }, 180);
+  }
+  function closeLb() {
+    if (!lb) return;
+    const { ov, im, idx, thumbs } = lb; lb = null;
+    ov.classList.remove('on'); place(im, thumbBox(thumbs[idx]));
+    setTimeout(() => { ov.remove(); thumbs[idx].classList.remove('hold'); }, 380);
+  }
+  addEventListener('keydown', e => {
+    if (!lb) return;
+    if (e.key === 'Escape') closeLb();
+    if (e.key === 'ArrowLeft') step(-1);
+    if (e.key === 'ArrowRight') step(1);
+  });
+  addEventListener('resize', () => { if (lb) place(lb.im, centreBox()); });
+  panel.addEventListener('click', e => {
+    const t = e.target.closest('.photos img');
+    if (t) openLb([...t.parentNode.children].indexOf(t));
+  });
+
   function show(i) {
     [...nav.children].forEach((b, j) => b.setAttribute('aria-selected', j === i));
     panel.classList.toggle('home', i === 0);
