@@ -40,6 +40,23 @@
            background:var(--card); border:1px dashed var(--border); border-radius:12px; padding:32px 16px; }
   .panel h2 { font-size:18px; margin-bottom:6px; }
   .panel p { color:var(--muted); font-size:14px; }
+
+  /* Home: dogs and cats, tilted like the original test page */
+  .panel.home { border-style:solid; padding:36px 16px 44px; }
+  .photos { display:flex; flex-wrap:wrap; justify-content:center; gap:18px 0; }
+  .photos img { width:155px; height:155px; object-fit:cover; border-radius:14px; border:3px solid #fff;
+                box-shadow:0 8px 28px rgba(0,0,0,0.22); margin:0 -10px; position:relative; }
+  .photos img:nth-child(1) { transform:rotate( 9deg) translateY(12px); z-index:1; }
+  .photos img:nth-child(2) { transform:rotate(-6deg) translateY( 6px); z-index:2; }
+  .photos img:nth-child(3) { transform:rotate( 4deg) translateY( 2px); z-index:3; }
+  .photos img:nth-child(4) { transform:rotate(-10deg)translateY(10px); z-index:2; }
+  .photos img:nth-child(5) { transform:rotate( 2deg) translateY( 0px); z-index:4; }
+  .photos img:nth-child(6) { transform:rotate(-5deg) translateY( 8px); z-index:3; }
+  .photos img:nth-child(7) { transform:rotate( 8deg) translateY( 4px); z-index:2; }
+  .photos img:nth-child(8) { transform:rotate(-3deg) translateY(10px); z-index:1; }
+  .photos img:nth-child(9) { transform:rotate( 6deg) translateY( 6px); z-index:2; }
+  @media (max-width:780px) { .photos img { width:120px; height:120px; margin:0 -8px; } }
+  @media (max-width:520px) { .photos img { width:96px; height:96px; margin:0 -6px; } }
 </style>
 </head>
 <body>
@@ -58,14 +75,26 @@
 </div>
 
 <script>
-  // Placeholder tabs — names and contents will be filled in later.
-  const TABS = ['Home', 'Warehouse', 'Analysis', 'Reports', 'Tools', 'Links'];
+  // Tabs 1–10 are placeholders — names and contents will be filled in later.
+  const TABS = ['Home', '1', '2', '3', '4', '5', '6', '7', '8', '9', '10'];
+
+  // dogs 🐶 and cats 🐱 (Unsplash), shown on Home
+  const PHOTOS = [
+    ['1601979031925-424e53b6caaa', 'dog'], ['1543852786-1cf6624b9987', 'cat'],
+    ['1587402092301-725e37c70fd8', 'dog'], ['1561948955-570b270e7c36', 'cat'],
+    ['1600804340584-c7db2eacf0bf', 'dog'], ['1511275539165-cc46b1ee89bf', 'cat'],
+    ['1582456891925-a53965520520', 'dog'], ['1637424864367-7ab8752c19c6', 'cat'],
+    ['1784385882549-cc09992b9bad', 'dog'],
+  ];
+  const HOME = '<div class="photos">' + PHOTOS.map(([id, alt]) =>
+    '<img src="https://images.unsplash.com/photo-' + id + '?w=320&q=85&auto=format&fit=crop" alt="' + alt + '">').join('') + '</div>';
 
   const nav = document.getElementById('tabs');
   const panel = document.getElementById('panel');
   function show(i) {
     [...nav.children].forEach((b, j) => b.setAttribute('aria-selected', j === i));
-    panel.innerHTML = '<div><h2>' + TABS[i] + '</h2><p>Coming soon</p></div>';
+    panel.classList.toggle('home', i === 0);
+    panel.innerHTML = i === 0 ? HOME : '<div><h2>' + TABS[i] + '</h2><p>Coming soon</p></div>';
     history.replaceState(null, '', '#' + TABS[i].toLowerCase());
   }
   TABS.forEach((name, i) => {
